@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        *{
+            margin:0;
+            padding:0;
+        }
+        canvas{
+            background: #000;
+        }
+    </style>
+</head>
+<body>
+<canvas id="main_canvas" width="320" height="600">
+</canvas>
+<script>
+   var ct = document.getElementById("main_canvas");
+   var ctx = ct.getContext('2d')
+   var WIDTH = ct.width
+   var HEIGHT = ct.height
+   var ROCKET_W,ROCKET_H;
+   _img = new Image()
+
+   function Rocket(img,x,y,speed) {
+       this.x = x;
+       this.y = y;
+       this.speed_y = speed || 1
+       this.img = img
+       this.render = function () {
+           ctx.drawImage(this.img,this.x,this.y)
+       }
+       this.updater = function () {
+           this.y = this.y - this.speed_y
+           this.render()
+       }
+   }
+   function renderFPS(fps) {
+       ctx.font = "20px Verdana"
+       ctx.fillStyle = "yellow"
+       ctx.fillText("fps:"+fps,10,20)
+   }
+   function start_loop() {
+       rocket_case0 = new Rocket(_img,init_x-50,init_y)
+       rocket_case1 = new Rocket(_img,init_x,init_y-50)
+       rocket_case2 = new Rocket(_img,init_x+50,init_y)
+       var start_time = Date.now()
+       var loop_count = 0
+       function loop() {
+           requestAnimationFrame(function () {
+               loop_count++
+               var _now = Date.now()
+               var fps = (loop_count/(_now-start_time))*1000
+               ctx.clearRect(0,0,WIDTH,HEIGHT)
+               rocket_case1.updater()
+               rocket_case2.updater()
+               rocket_case0.updater()
+               renderFPS(Math.floor(fps))
+               loop()
+           })
+       }
+       loop()
+   }
+   function load() {
+       ROCKET_W = _img.width
+       ROCKET_H = _img.height
+       init_x = (WIDTH -ROCKET_W)/2
+       init_y = (HEIGHT - ROCKET_H)
+       start_loop()
+   }
+    _img.onload = load
+    _img.src = "assert/rocket.png"
+</script>
+</body>
+</html>
