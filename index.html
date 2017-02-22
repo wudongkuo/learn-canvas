@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <script src="https://cdn.jsdelivr.net/lodash/4.17.4/lodash.min.js"></script>
     <style>
         *{
             margin:0;
@@ -29,13 +30,41 @@
        this.y = y;
        this.speed_y = speed || 1
        this.img = img
+       this.isPause = true
+       this.start =function () {
+         this.isPause = false
+       }
+       this.pause =function () {
+         this.isPause =true
+       }
        this.render = function () {
            ctx.drawImage(this.img,this.x,this.y)
        }
        this.updater = function () {
-           this.y = this.y - this.speed_y
            this.render()
        }
+   }
+   function Star(x,y,radius,speed){
+     this.x = x;
+     this.y= y;
+     this.speed = speed
+     this.radius =radius;
+     this.render = function(){
+       ctx.beginPath()
+       ctx.save()
+       ctx.fillStyle = "#fff"
+       ctx.arc(this.x,this.y,radius,0,Math.PI*2)
+       ctx.fill()
+       ctx.closePath()
+       ctx.restore()
+     }
+     this.updater = function () {
+       if(this.y>HEIGHT){
+         this.y=-5
+       }
+       this.y+=this.speed
+       this.render()
+     }
    }
    function renderFPS(fps) {
        ctx.font = "20px Verdana"
@@ -43,20 +72,29 @@
        ctx.fillText("fps:"+fps,10,20)
    }
    function start_loop() {
-       rocket_case0 = new Rocket(_img,init_x-50,init_y)
-       rocket_case1 = new Rocket(_img,init_x,init_y-50)
-       rocket_case2 = new Rocket(_img,init_x+50,init_y)
+       rocket_case1 = new Rocket(_img,init_x,init_y)
+       var starSkyGruop=[]
+       for(var i =0;i<100;i++){
+         var x1,y1,radius1,speed;
+         x1 = _.random(0,WIDTH)
+         y1 = _.random(0,HEIGHT)
+         radius1 = _.random(0,1.5)
+         speed = _.random(0.2,2)
+         starSkyGruop.push(new Star(x1,y1,radius1,speed))
+       }
        var start_time = Date.now()
        var loop_count = 0
        function loop() {
+         rocket_case1.start()
            requestAnimationFrame(function () {
                loop_count++
                var _now = Date.now()
                var fps = (loop_count/(_now-start_time))*1000
                ctx.clearRect(0,0,WIDTH,HEIGHT)
                rocket_case1.updater()
-               rocket_case2.updater()
-               rocket_case0.updater()
+               starSkyGruop.forEach(function(star_case){
+                 star_case.updater()
+               })
                renderFPS(Math.floor(fps))
                loop()
            })
