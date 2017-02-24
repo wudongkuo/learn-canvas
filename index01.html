@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>canvas教学</title>
+    <script src="https://cdn.jsdelivr.net/lodash/4.17.4/lodash.min.js"></script>
+    <style>
+        *{
+            margin:0;
+            padding:0;
+        }
+        canvas{
+            background: #000;
+        }
+    </style>
+</head>
+<body>
+<canvas id="main_canvas" width="1366" height="800">
+</canvas>
+<script>
+   var ct = document.getElementById("main_canvas");
+   var ctx = ct.getContext('2d')
+   var WIDTH = ct.width
+   var HEIGHT = ct.height
+
+   var img = new Image()
+   function Rocket(x,y,speed){
+       this.x = x;
+       this.y= y;
+       this.speed = speed;
+       this.render = function(){
+         ctx.drawImage(img,this.x,this.y)
+       }
+       this.updater=function () {
+           this.y--
+           this.render()
+       }
+   }
+   img.onload = function () {
+       y = HEIGHT
+       r1 = new Rocket(0,HEIGHT-img.height)
+       r2 = new Rocket(50,HEIGHT-img.height)
+
+       function loop(){
+           requestAnimationFrame(function () {
+                ctx.clearRect(0,0,WIDTH,HEIGHT)
+                r1.updater()
+                r2.updater()
+                loop()
+           })
+       }
+       loop()
+
+
+   }
+   img.src = "assert/rocket.png"
+
+</script>
+</body>
+</html>

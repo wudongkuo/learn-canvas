@@ -61,6 +61,7 @@
      this.updater = function () {
        if(this.y>HEIGHT){
          this.y=-5
+         this.x=_.random(0,WIDTH)
        }
        this.y+=this.speed
        this.render()

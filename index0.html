@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdn.jsdelivr.net/lodash/4.17.4/lodash.min.js"></script>
+    <style>
+        *{
+            margin:0;
+            padding:0;
+        }
+        canvas{
+            background: #000;
+        }
+    </style>
+</head>
+<body>
+<canvas id="main_canvas" width="1366" height="800">
+</canvas>
+<script>
+   var ct = document.getElementById("main_canvas");
+   var ctx = ct.getContext('2d')
+   var WIDTH = ct.width
+   var HEIGHT = ct.height
+
+   function renderline(x,y,x1,y1){
+       ctx.beginPath()
+       ctx.fillStyle = "#ffffff"
+       ctx.strokeStyle = "#ffffff"
+       ctx.moveTo(x,y)
+       ctx.lineTo(x1,y1)
+       ctx.fill()
+       ctx.stroke()
+       ctx.closePath()
+   }
+   function render(num,x,y,x1,y1,x2,y2,cb){
+       ctx.beginPath()
+       ctx.fillStyle = "#ffffff"
+       ctx.arc(x,y,10,0,Math.PI*2)
+       ctx.fill();
+       ctx.closePath()
+       renderline(x,y,x1,y1)
+       renderline(x,y,x2,y2)
+       tree(num,x1,y1)
+       tree(num,x2,y2)
+   }
+   len=50
+   function tree(num,x,y){
+       if(num<1){
+           return false
+       }
+       if(x===undefined){
+           x = WIDTH/2
+           y = len
+       }
+       setTimeout(function () {
+           render(num/2,x,y,(x-len),(y+len),(x+len),(y+len))
+       },1000)
+   }
+   tree(1000)
+</script>
+</body>
+</html>
